@@ -1,0 +1,28 @@
+name: Décision
+description: Un choix important à trancher en équipe (architecture, outil, règle)
+title: "[Décision] "
+labels: ["type: decision"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: La question à trancher
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Les options connues
+      placeholder: "1. ...\n2. ..."
+  - type: dropdown
+    id: ia
+    attributes:
+      label: Une IA a-t-elle aidé à préparer cette décision ?
+      options:
+        - Non
+        - Oui (préciser laquelle dans les options)
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "La décision devient officielle quand l'ADR (copie de `docs/decisions/0000-modele.md`) est fusionné par PR."

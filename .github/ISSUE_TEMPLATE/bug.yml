@@ -1,0 +1,29 @@
+name: Bug
+description: Quelque chose ne marche pas comme prévu
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: probleme
+    attributes:
+      label: Ce qui se passe
+    validations:
+      required: true
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Ce qui devrait se passer
+    validations:
+      required: true
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Comment le reproduire
+      placeholder: "1. ...\n2. ..."
+    validations:
+      required: true
+  - type: input
+    id: appareil
+    attributes:
+      label: Appareil / système
+      placeholder: "ex. Android 14, Pixel 7"

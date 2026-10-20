@@ -1,0 +1,27 @@
+# Système
+.DS_Store
+Thumbs.db
+
+# Éditeurs
+.idea/
+.vscode/
+*.iml
+
+# Secrets — ne jamais committer
+.env
+.env.*
+*.keystore
+*.jks
+key.properties
+google-services.json
+GoogleService-Info.plist
+
+# Flutter / Dart (prêt pour plus tard)
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/

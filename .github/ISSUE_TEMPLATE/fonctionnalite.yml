@@ -1,0 +1,28 @@
+name: Fonctionnalité
+description: Une nouvelle chose que l'application doit faire
+title: "[Feature] "
+labels: ["type: feature"]
+body:
+  - type: textarea
+    id: but
+    attributes:
+      label: Le but
+      description: Qu'est-ce que l'utilisateur pourra faire ? Pourquoi ?
+    validations:
+      required: true
+  - type: textarea
+    id: fini
+    attributes:
+      label: Fini quand
+      description: Liste simple de ce qui doit marcher pour que la tâche soit terminée.
+      placeholder: "- [ ] ..."
+    validations:
+      required: true
+  - type: textarea
+    id: hors
+    attributes:
+      label: Hors sujet
+      description: Ce qu'on ne fait PAS dans cette tâche.
+  - type: markdown
+    attributes:
+      value: "**Rappel :** assigne une seule personne. Si la tâche demande une décision d'architecture, ouvre d'abord une issue « Décision »."
