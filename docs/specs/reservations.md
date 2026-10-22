@@ -7,12 +7,12 @@ Status: Proposed for Issue #5
 This document defines the V1 behavior for:
 - studio information;
 - availability;
-- reservation requests;
-- approval/rejection;
+- reservation submission;
+- sequential approval and rejection;
 - cancellations;
-- conflicts and edge cases.
+- conflicts, quotas and edge cases.
 
-Role names and permissions are defined separately in Issue #4. This document refers to the person allowed to approve reservations as the **authorized reviewer**.
+Role and permission mapping is owned by Issue #4. Detailed equipment allocation, maintenance workflow and notification technology are owned by Issue #7. This document defines only the reservation behavior that depends on those areas.
 
 ## Studio information
 
@@ -27,6 +27,8 @@ A studio should expose the information a user needs before booking:
 - current availability;
 - any booking restrictions relevant to the user.
 
+The definitive V1 list of bookable studios is intentionally not fixed here. Issue #8 records an unresolved discrepancy between the Cahier des Charges and the supplied technical matrix; this specification does not choose which named spaces are bookable studios and which are supporting areas.
+
 A studio that is unavailable for maintenance or administration must not appear bookable for the affected period.
 
 ## Availability
@@ -37,35 +39,46 @@ A time slot is bookable only when:
 - the studio is open for that period;
 - the current campus-local time is before the requested start time;
 - the requested start time is before the end time;
-- the slot does not overlap an existing active reservation;
+- the interval does not overlap another blocking reservation;
 - the studio is not blocked for maintenance or another administrative reason.
 
-V1 should prevent double booking rather than trying to resolve it after submission.
+V1 must pre-lock a submitted interval while it is pending approval, so availability is not offered to competing requests during review.
 
 ## Reservation lifecycle
 
-The V1 reservation states are:
+The canonical V1 reservation states are:
 
-1. **Requested** — submitted by a user and waiting for review.
-2. **Approved** — accepted by an authorized reviewer.
-3. **Rejected** — refused by an authorized reviewer.
-4. **Cancelled** — cancelled before completion.
-5. **Completed** — an Approved reservation that automatically reaches this state when its reserved period ends.
-6. **Expired** — a Requested reservation that reached its start time without being approved, rejected or cancelled.
+1. **PendingEntity** — submitted and waiting for the requester-dependent entity/business approval. User-visible meaning: **En attente entité**.
+2. **PendingStudio** — the entity/business approval is complete and the request is waiting for final Studios technical validation. User-visible meaning: **En attente studio**.
+3. **Validated** — both approval levels are complete and the reservation is fully validated. User-visible meaning: **Validée**.
+4. **Rejected** — refused at either approval level with a mandatory reason.
+5. **Cancelled** — cancelled by the requester before the reservation start time.
+6. **Expired** — a PendingEntity or PendingStudio reservation that reached its start time before the required approvals were complete.
+7. **Completed** — a Validated reservation that automatically reaches this state when its reserved period ends.
+
+The user-visible progression for a successful reservation is:
+
+**En attente entité -> En attente studio -> Validée**
+
+There is no standalone generic single-reviewer Approved state in this workflow. `Validated` is the fully approved state.
 
 Allowed transitions:
-- Requested -> Approved
-- Requested -> Rejected
-- Requested -> Cancelled
-- Requested -> Expired (automatically when the start time is reached while the request is still Requested)
-- Approved -> Cancelled
-- Approved -> Completed (automatically when the end time is reached)
+- PendingEntity -> PendingStudio after successful Level-1 approval;
+- PendingEntity -> Rejected after a Level-1 refusal;
+- PendingEntity -> Cancelled before the start time;
+- PendingEntity -> Expired automatically when the start time is reached;
+- PendingStudio -> Validated after successful Level-2 approval;
+- PendingStudio -> Rejected after a Level-2 refusal;
+- PendingStudio -> Cancelled before the start time;
+- PendingStudio -> Expired automatically when the start time is reached;
+- Validated -> Cancelled before the start time;
+- Validated -> Completed automatically when the end time is reached.
 
-Rejected, Cancelled, Expired and Completed are terminal states.
+Rejected, Cancelled, Expired and Completed are terminal states. No reservation may move directly from PendingEntity to Validated.
 
-The system must automatically move a Requested reservation to **Expired** no later than its start time if it has not already reached another terminal state. Once the start time is reached, the reservation cannot remain pending and cannot later be approved. The mechanism used to perform this transition is an implementation detail; its externally visible outcome is not.
+The system must automatically move a PendingEntity or PendingStudio reservation to **Expired** no later than its start time if the required approvals are not complete. Once the start time is reached, the reservation cannot remain pending and cannot later be approved. The mechanism used to perform this transition is an implementation detail; its externally visible outcome is not.
 
-The system must automatically move an Approved reservation to **Completed** once the current campus-local time reaches its end time. From that point onward, it is no longer an active reservation. The mechanism used to perform this transition is an implementation detail; the externally visible state change is required.
+The system must automatically move a Validated reservation to **Completed** once the current campus-local time reaches its end time. From that point onward, it is no longer a blocking reservation. The mechanism used to perform this transition is an implementation detail; the externally visible state change is required.
 
 ## Creating a reservation
 
@@ -75,72 +88,102 @@ A reservation request must include:
 - start time;
 - end time;
 - requester;
+- activity/usage type, which must be one of **Enregistrement**, **Captation d'image**, **Montage** or **Mixage audio**;
 - purpose or short reason when required by the final product scope.
+
+A request may also include additional mobile equipment requests, such as cameras, microphones or lighting kits. The reservation stores these as requested equipment references for the Studios/equipment workflow. Detailed allocation, quantities, assignment, maintenance handling and fulfilment rules remain in Issue #7 and are not defined here.
+
+Before submission, the requester must digitally accept or sign the responsibility charter and applicable internal rules. A request cannot be submitted without that acceptance/signature step.
+
+Before submission, the system must enforce the applicable weekly booking-hour quota for the requester's role/profile for the relevant campus-local week. The quota check is part of the same atomic/serialized submission operation as the availability check and pending pre-lock. The exact quota configuration and counting policy must be confirmed by the team; the Cahier's “2h/week for a Student profile” is an example, not a permanent rule in this specification, and must not be hard-coded until confirmed.
 
 The requested start time must be strictly in the future when submission begins. A request with a start time at or before the current campus-local time must be rejected.
 
-The future-time check, availability check and creation of the Requested reservation must be one atomic operation or an equivalently serialized operation. The system must serialize competing submissions for the same studio and time range (or use an equivalent invariant-enforcing mechanism), check for conflicts, and create the Requested reservation as one indivisible operation.
+The future-time check, quota check, availability check and creation of the PendingEntity reservation must be one atomic operation or an equivalently serialized operation. The system must serialize competing submissions for the same studio and overlapping time range (or use an equivalent invariant-enforcing mechanism), check the conditions, and create the pending reservation as one indivisible operation. A successful submission immediately blocks the interval for competing reservations.
 
-If that operation proves that the slot is no longer bookable—for example, because of a conflict, a start time that is no longer in the future, a closed studio, or an administrative/maintenance block—no reservation is created and the user is told that the slot or studio became unavailable. If the checks pass but the operation cannot commit because of a network, timeout, backend or similar technical failure, the user receives a retryable system/network error instead. The system must not describe a technical failure as an availability failure.
+If that operation proves that the request is not bookable—for example, because of a conflict, a quota violation, a start time that is no longer in the future, a closed studio, or an administrative/maintenance block—no reservation is created and the user is told which availability or quota condition prevented booking. If the checks pass but the operation cannot commit because of a network, timeout, backend or similar technical failure, the user receives a retryable system/network error instead. The system must not describe a technical failure as an availability failure.
 
-A successful submission becomes **Requested**.
+A successful submission becomes **PendingEntity** and is shown as **En attente entité**.
 
-## Approval and rejection
+## Sequential approval and rejection
 
-An authorized reviewer can:
-- approve a Requested reservation;
-- reject a Requested reservation;
-- optionally provide a short reason when rejecting.
+The reservation requires two sequential approval levels. A Level-1 approval is not final approval; it only advances the reservation to PendingStudio.
 
-The exact role or roles allowed to review reservations come from Issue #4.
+### Level 1 — entity/business approval
 
-Approval is allowed only while the requested start time is still in the future. If the start time has been reached, approval must fail and the Requested reservation must be treated as **Expired** under the automatic-expiry rule.
+The appropriate entity/business approver validates first. The requester-to-approver mapping and the permissions for this level are defined by Issue #4 and are not duplicated or invented here.
 
-During the same atomic operation or equivalently serialized operation, approval must revalidate that:
+When Level 1 succeeds, the state changes from **PendingEntity** to **PendingStudio**, and the user-visible status changes from **En attente entité** to **En attente studio**.
+
+The Level-1 decision and the PendingEntity -> PendingStudio state transition must be committed together. The unknown-outcome reconciliation rule applies to this transition as well as to submission and final validation.
+
+A Level-1 refusal changes PendingEntity to **Rejected**. The refusal requires a mandatory reason, and the requester must be notified immediately. Notification technology remains outside Issue #5 and is handled under Issue #7.
+
+### Level 2 — final Studios technical validation
+
+Final technical validation belongs to the Studios responsible function. The Level-2 operation must be atomic or equivalently serialized with the state change to Validated.
+
+During the same final approval operation, the Studios responsible function must revalidate all of the following:
 - the requested start time is still in the future;
 - the studio is currently open and available for the entire reserved interval;
-- no administrative or maintenance block prevents booking the interval;
-- no conflicting blocking reservation exists.
+- no other blocking reservation conflicts with the interval;
+- no maintenance or administrative block prevents booking the interval;
+- required centralized technical/control-room resources are available;
+- required human technical resources, such as technicians or sound engineers, are available when applicable.
 
-The revalidation and Requested -> Approved transition must succeed together. Approval must fail if any revalidated condition no longer holds. If the revalidation proves that the reservation is no longer bookable, the reviewer is told that the slot or studio became unavailable. If the checks pass but approval cannot commit because of a network, timeout, backend or similar technical failure, the reviewer receives a retryable system/network error instead; the failure must not be reported as proof that the slot is unavailable.
+Requested mobile equipment references may be considered through the equipment/maintenance rules owned by Issue #7, but this specification does not define staffing algorithms, allocation algorithms or exact resource quantities.
+
+If every revalidated condition holds, the state changes from **PendingStudio** to **Validated**, and the user-visible status becomes **Validée**. If any availability or resource condition is disproven, Level 2 refuses the reservation, changes it to **Rejected**, records a mandatory reason, and triggers immediate notification to the requester. A technical failure that prevents the operation from completing is not a refusal and must not be converted into Rejected.
+
+Creation and approval at either level must use an operation identifier or an equivalent idempotency/reconciliation invariant. If a response is lost after the server may have committed creation or approval, the client must reconcile the operation's outcome before retrying. It must not blindly retry, claim that the operation definitely failed, or present a technical failure as proof that the slot is unavailable.
 
 ## Cancellation
 
-A requester can cancel their own Requested reservation before its start time.
+A requester can cancel their own PendingEntity, PendingStudio or Validated reservation before its start time.
 
-A requester can cancel their own Approved reservation before its start time.
-
-The exact rules for administrative cancellation and any cancellation cutoff stricter than the start time can be added later if the product scope requires them.
+After the start time, a pending reservation is Expired and a Validated reservation cannot be cancelled under this V1 specification. Administrative cancellation rules and any stricter cancellation cutoff can be added later if the product scope requires them.
 
 ## Conflict handling
 
-Two active reservations must never overlap for the same studio.
+Two blocking reservations must never overlap for the same studio.
 
 Reservation intervals use a start-inclusive, end-exclusive rule: a reservation ending at 10:00 does not conflict with one starting at 10:00, but any shared time within both intervals is a conflict.
 
-For V1, both **Requested** and **Approved** reservations block the same time slot. This keeps availability predictable and avoids multiple people competing for the same slot during approval.
+For V1, **PendingEntity**, **PendingStudio** and **Validated** reservations block the same time slot. Rejected, Cancelled, Expired and Completed reservations do not block availability. PendingEntity and PendingStudio therefore continue to pre-lock the interval throughout both approval stages.
 
-Conflict checking and the state change that creates or approves a reservation must be atomic or serialized. A check performed before the state change is not sufficient, because two concurrent operations could otherwise both observe a free slot and both succeed.
+Conflict checking and the state change that creates or validates a reservation must be atomic or serialized. A check performed before the state change is not sufficient, because two concurrent operations could otherwise both observe a free slot and both succeed.
 
 Availability failures and technical failures must be presented differently:
-- if an atomic availability check proves that the requested interval is no longer bookable, the request or approval fails and the user is told that the slot or studio became unavailable;
-- if availability has not been disproved but creation or approval cannot commit because of a network, timeout, backend or similar technical failure, the operation fails with a retryable system/network error;
-- a slot-unavailable message must never be used for a technical failure.
+- if an atomic availability check proves that a request or final approval is no longer allowed, the operation fails with a clear availability message;
+- if the atomic quota check proves that a new request would exceed the applicable quota, submission fails with a clear quota message;
+- if the final technical validation proves that the studio, required resources or interval is no longer bookable, the reservation is refused with its mandatory reason and the requester is notified;
+- if availability has not been disproved but creation, Level-1 approval or Level-2 approval cannot commit because of a network, timeout, backend or similar technical failure, the operation fails with a retryable system/network error;
+- a slot-unavailable or quota message must never be used for a technical failure.
+
+If the result of creation or approval is unknown after a timeout or network interruption, the UI must show a temporary **Checking outcome** or **Outcome unknown** state. The system must reconcile the operation identifier and current reservation status before allowing a retry. Once reconciled, the UI must show the actual resulting state or allow a retry only when the original operation is confirmed not to have committed.
 
 ## Edge cases
 
 The product must handle:
 - a studio becoming unavailable after a user opened its page;
-- two users submitting the same slot nearly simultaneously;
-- a Requested reservation reaching its start time without review and becoming Expired;
-- an Approved reservation reaching its end time and becoming Completed;
+- two users submitting the same interval nearly simultaneously;
+- a submission without the required activity type;
+- a submission without digital responsibility-charter acceptance/signature;
+- a request that would exceed the applicable weekly role quota;
+- a PendingEntity reservation reaching its start time without Level-1 approval and becoming Expired;
+- a PendingStudio reservation reaching its start time without Level-2 approval and becoming Expired;
+- a Validated reservation reaching its end time and becoming Completed;
 - a reservation crossing outside studio opening hours;
 - invalid or zero-length time ranges;
-- the start time passing between validation and submission or approval;
+- the start time passing between validation and submission, Level-1 approval or Level-2 approval;
 - cancellation immediately before the start time;
-- a reviewer attempting to approve a reservation whose slot is no longer valid;
-- a studio blocked for maintenance;
-- unavailable network/offline state without pretending a reservation succeeded.
+- a maintenance or administrative block added before final validation;
+- required technical or human resources becoming unavailable before final validation;
+- a refusal at either level without a reason, which must be rejected as invalid reviewer input;
+- a lost response after the server may have committed creation or approval;
+- a reviewer attempting to validate a reservation whose interval is no longer bookable;
+- unavailable network/offline state without pretending a reservation succeeded;
+- an unknown inventory item or supporting space until the V1 bookable studio inventory is confirmed.
 
 ## UX states
 
@@ -148,9 +191,16 @@ The reservation flow must include:
 - loading;
 - empty availability;
 - validation errors;
+- missing activity type or responsibility-charter acceptance feedback;
+- quota-exceeded feedback;
+- **En attente entité**;
+- **En attente studio**;
+- **Validée**;
+- rejection reason and notification feedback;
 - conflict/no-longer-available feedback;
 - expired or past-start reservation feedback;
 - retryable system/network failure feedback that is distinct from slot-unavailable feedback;
+- **Checking outcome** or **Outcome unknown** after an interrupted operation;
 - permission denied;
 - offline/network failure;
 - success confirmation.
@@ -158,10 +208,13 @@ The reservation flow must include:
 ## Out of scope for this Issue
 
 This Issue does not decide:
-- exact user role names or global permissions;
+- exact requester-to-approver role mapping or global permissions, which belong to Issue #4;
+- the definitive V1 studio inventory while the source discrepancy in Issue #8 remains unresolved;
+- the final numeric weekly quota for Students or other roles;
+- detailed mobile-equipment allocation, quantities, assignment, maintenance workflow or staffing algorithms, which belong to Issue #7;
+- notification technology, which belongs to Issue #7;
 - Flutter architecture;
 - backend/database technology;
-- notification technology;
 - QR implementation;
 - payment or billing;
 - recurring reservations.
