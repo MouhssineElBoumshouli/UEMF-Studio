@@ -95,11 +95,11 @@ A request may also include additional mobile equipment requests, such as cameras
 
 Before submission, the requester must digitally accept or sign the responsibility charter and applicable internal rules. A request cannot be submitted without that acceptance/signature step.
 
-Before submission, the system must enforce the applicable weekly booking-hour quota for the requester's role/profile for the relevant campus-local week. The quota check is part of the same atomic/serialized submission operation as the availability check and pending pre-lock. The exact quota configuration and counting policy must be confirmed by the team; the Cahier's “2h/week for a Student profile” is an example, not a permanent rule in this specification, and must not be hard-coded until confirmed.
+Before submission, the system must enforce the applicable weekly booking-hour quota for the requester's role/profile for the relevant campus-local week. The quota check is part of the same atomic/serialized submission operation as the availability check and pending pre-lock. The quota check and reservation creation must also be serialized or protected by an equivalent invariant keyed by the relevant quota subject and campus-local week. This quota protection must apply across different studios and non-overlapping intervals, so concurrent submissions by the same quota subject cannot collectively exceed the applicable weekly quota. The exact quota configuration and counting policy must be confirmed by the team; the Cahier's “2h/week for a Student profile” is an example, not a permanent rule in this specification, and must not be hard-coded until confirmed.
 
 The requested start time must be strictly in the future when submission begins. A request with a start time at or before the current campus-local time must be rejected.
 
-The future-time check, quota check, availability check and creation of the PendingEntity reservation must be one atomic operation or an equivalently serialized operation. The system must serialize competing submissions for the same studio and overlapping time range (or use an equivalent invariant-enforcing mechanism), check the conditions, and create the pending reservation as one indivisible operation. A successful submission immediately blocks the interval for competing reservations.
+The future-time check, quota check, availability check and creation of the PendingEntity reservation must be one atomic operation or an equivalently serialized operation. The system must serialize competing submissions for the same studio and overlapping time range (or use an equivalent invariant-enforcing mechanism), while also enforcing the quota-subject/week invariant across all studios and intervals. It must check the conditions and create the pending reservation as one indivisible operation. A successful submission immediately blocks the interval for competing reservations.
 
 If that operation proves that the request is not bookable—for example, because of a conflict, a quota violation, a start time that is no longer in the future, a closed studio, or an administrative/maintenance block—no reservation is created and the user is told which availability or quota condition prevented booking. If the checks pass but the operation cannot commit because of a network, timeout, backend or similar technical failure, the user receives a retryable system/network error instead. The system must not describe a technical failure as an availability failure.
 
@@ -133,6 +133,8 @@ During the same final approval operation, the Studios responsible function must 
 
 Requested mobile equipment references may be considered through the equipment/maintenance rules owned by Issue #7, but this specification does not define staffing algorithms, allocation algorithms or exact resource quantities.
 
+Whenever final validation requires an exclusive shared technical resource, its availability check and claim/reservation must occur atomically or be equivalently serialized with the Level-2 state transition. This includes a centralized control room or régie, a technician, a sound engineer, or another exclusive technical resource defined later by Issue #7. The invariant must be keyed by the resource and overlapping reservation interval, and must prevent the same resource from being claimed for overlapping reservations even when those reservations use different studios. A failed claim because the resource is already required by an overlapping reservation is a Level-2 availability refusal, not a technical commit failure.
+
 If every revalidated condition holds, the state changes from **PendingStudio** to **Validated**, and the user-visible status becomes **Validée**. If any availability or resource condition is disproven, Level 2 refuses the reservation, changes it to **Rejected**, records a mandatory reason, and triggers immediate notification to the requester. A technical failure that prevents the operation from completing is not a refusal and must not be converted into Rejected.
 
 Creation and approval at either level must use an operation identifier or an equivalent idempotency/reconciliation invariant. If a response is lost after the server may have committed creation or approval, the client must reconcile the operation's outcome before retrying. It must not blindly retry, claim that the operation definitely failed, or present a technical failure as proof that the slot is unavailable.
@@ -153,6 +155,8 @@ For V1, **PendingEntity**, **PendingStudio** and **Validated** reservations bloc
 
 Conflict checking and the state change that creates or validates a reservation must be atomic or serialized. A check performed before the state change is not sufficient, because two concurrent operations could otherwise both observe a free slot and both succeed.
 
+The studio conflict invariant and the shared-resource invariant are separate and cumulative: a reservation must have both a free studio interval and successful claims for every required exclusive shared resource. The same resource must never be allocated to overlapping reservations, including reservations for different studios.
+
 Availability failures and technical failures must be presented differently:
 - if an atomic availability check proves that a request or final approval is no longer allowed, the operation fails with a clear availability message;
 - if the atomic quota check proves that a new request would exceed the applicable quota, submission fails with a clear quota message;
@@ -167,6 +171,8 @@ If the result of creation or approval is unknown after a timeout or network inte
 The product must handle:
 - a studio becoming unavailable after a user opened its page;
 - two users submitting the same interval nearly simultaneously;
+- concurrent submissions by the same quota subject for different studios in the same campus-local week;
+- concurrent Level-2 validations for different studios requiring the same exclusive shared technical resource;
 - a submission without the required activity type;
 - a submission without digital responsibility-charter acceptance/signature;
 - a request that would exceed the applicable weekly role quota;
