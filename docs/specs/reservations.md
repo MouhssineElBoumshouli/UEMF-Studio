@@ -115,7 +115,12 @@ The appropriate entity/business approver validates first. The requester-to-appro
 
 When Level 1 succeeds, the state changes from **PendingEntity** to **PendingStudio**, and the user-visible status changes from **En attente entité** to **En attente studio**.
 
-The Level-1 decision and the PendingEntity -> PendingStudio state transition must be committed together. The unknown-outcome reconciliation rule applies to this transition as well as to submission and final validation.
+The Level-1 operation must be atomic or equivalently serialized and, at its commit point, must verify all of the following together:
+- the reservation is still **PendingEntity**;
+- the current campus-local time is strictly before the reservation start time;
+- the Level-1 approval decision and the **PendingEntity -> PendingStudio** state transition can be committed together.
+
+Automatic expiry of a PendingEntity reservation competes with Level-1 approval under the same state-transition serialization. If expiry commits first, or if the start time has been reached when the Level-1 operation is resolved, Level 1 must not succeed or advance the reservation; the operation must leave or observe the resulting state **Expired**. If Level 1 commits first while the start time is still in the future, the reservation may enter **PendingStudio**, after which the normal start-time expiry rule still applies if Level 2 has not completed. Only one of these transitions may win the race.
 
 A Level-1 refusal changes PendingEntity to **Rejected**. The refusal requires a mandatory reason, and the requester must be notified immediately. Notification technology remains outside Issue #5 and is handled under Issue #7.
 
@@ -137,11 +142,13 @@ Whenever final validation requires an exclusive shared technical resource, its a
 
 If every revalidated condition holds, the state changes from **PendingStudio** to **Validated**, and the user-visible status becomes **Validée**. If any availability or resource condition is disproven, Level 2 refuses the reservation, changes it to **Rejected**, records a mandatory reason, and triggers immediate notification to the requester. A technical failure that prevents the operation from completing is not a refusal and must not be converted into Rejected.
 
-Creation and approval at either level must use an operation identifier or an equivalent idempotency/reconciliation invariant. If a response is lost after the server may have committed creation or approval, the client must reconcile the operation's outcome before retrying. It must not blindly retry, claim that the operation definitely failed, or present a technical failure as proof that the slot is unavailable.
+Every user-visible state-changing reservation operation must use an operation identifier or an equivalent idempotency/reconciliation invariant. This includes submission, Level-1 approval, Level-1 refusal, Level-2 approval, Level-2 refusal and cancellation. If a response is lost after the server may have committed one of these operations, the client must reconcile the operation's outcome before retrying. It must not blindly retry, claim that the operation definitely failed, or present a technical failure as proof that the slot is unavailable. A retry or reconciliation of a committed refusal must not create a second state transition or duplicate the immediate requester notification; one committed refusal operation produces at most one such notification.
 
 ## Cancellation
 
 A requester can cancel their own PendingEntity, PendingStudio or Validated reservation before its start time.
+
+When a Validated reservation is cancelled, the **Validated -> Cancelled** transition and the release or deactivation of every exclusive shared technical-resource claim associated with that reservation must be atomic or equivalently serialized. Cancellation must not complete with an active claim left behind. Once the transition commits, the Cancelled reservation must not block a centralized control room or régie, technician, sound engineer, or any other exclusive shared resource defined by Issue #7. Detailed resource models and release mechanisms remain owned by Issue #7.
 
 After the start time, a pending reservation is Expired and a Validated reservation cannot be cancelled under this V1 specification. Administrative cancellation rules and any stricter cancellation cutoff can be added later if the product scope requires them.
 
@@ -157,14 +164,16 @@ Conflict checking and the state change that creates or validates a reservation m
 
 The studio conflict invariant and the shared-resource invariant are separate and cumulative: a reservation must have both a free studio interval and successful claims for every required exclusive shared resource. The same resource must never be allocated to overlapping reservations, including reservations for different studios.
 
+Cancelled reservations have no active exclusive shared-resource claims. Releasing or deactivating those claims is part of the Validated -> Cancelled transition, so a Cancelled reservation cannot continue to block an overlapping reservation for another studio.
+
 Availability failures and technical failures must be presented differently:
 - if an atomic availability check proves that a request or final approval is no longer allowed, the operation fails with a clear availability message;
 - if the atomic quota check proves that a new request would exceed the applicable quota, submission fails with a clear quota message;
 - if the final technical validation proves that the studio, required resources or interval is no longer bookable, the reservation is refused with its mandatory reason and the requester is notified;
-- if availability has not been disproved but creation, Level-1 approval or Level-2 approval cannot commit because of a network, timeout, backend or similar technical failure, the operation fails with a retryable system/network error;
+- if creation, an approval or refusal at either level, or cancellation cannot commit because of a network, timeout, backend or similar technical failure, the operation fails with a retryable system/network error;
 - a slot-unavailable or quota message must never be used for a technical failure.
 
-If the result of creation or approval is unknown after a timeout or network interruption, the UI must show a temporary **Checking outcome** or **Outcome unknown** state. The system must reconcile the operation identifier and current reservation status before allowing a retry. Once reconciled, the UI must show the actual resulting state or allow a retry only when the original operation is confirmed not to have committed.
+If the result of any user-visible state-changing operation is unknown after a timeout or network interruption, including a refusal or cancellation, the UI must show a temporary **Checking outcome** or **Outcome unknown** state. The system must reconcile the operation identifier and current reservation status before allowing a retry. Once reconciled, the UI must show the actual resulting state or allow a retry only when the original operation is confirmed not to have committed. A reconciled refusal must not send another immediate requester notification.
 
 ## Edge cases
 
@@ -173,6 +182,7 @@ The product must handle:
 - two users submitting the same interval nearly simultaneously;
 - concurrent submissions by the same quota subject for different studios in the same campus-local week;
 - concurrent Level-2 validations for different studios requiring the same exclusive shared technical resource;
+- a Level-1 approval reaching the start cutoff at the same time as automatic PendingEntity expiry;
 - a submission without the required activity type;
 - a submission without digital responsibility-charter acceptance/signature;
 - a request that would exceed the applicable weekly role quota;
@@ -186,7 +196,8 @@ The product must handle:
 - a maintenance or administrative block added before final validation;
 - required technical or human resources becoming unavailable before final validation;
 - a refusal at either level without a reason, which must be rejected as invalid reviewer input;
-- a lost response after the server may have committed creation or approval;
+- a lost response after the server may have committed creation, approval, refusal or cancellation;
+- cancellation of a Validated reservation releasing its exclusive shared-resource claims;
 - a reviewer attempting to validate a reservation whose interval is no longer bookable;
 - unavailable network/offline state without pretending a reservation succeeded;
 - an unknown inventory item or supporting space until the V1 bookable studio inventory is confirmed.
