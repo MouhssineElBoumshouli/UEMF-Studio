@@ -146,9 +146,15 @@ Every user-visible state-changing reservation operation must use an operation id
 
 ## Cancellation
 
-A requester can cancel their own PendingEntity, PendingStudio or Validated reservation before its start time.
+A requester can cancel their own PendingEntity, PendingStudio or Validated reservation only before its start time. The cancellation operation must be atomic or equivalently serialized and, at its commit point, must verify all of the following together:
+- the reservation is still in one of the cancellable source states: **PendingEntity**, **PendingStudio** or **Validated**;
+- the current campus-local time is strictly before the reservation start time;
+- if the source state is **Validated**, every exclusive shared technical-resource claim associated with the reservation is released or deactivated;
+- the state transition to **Cancelled** is committed.
 
-When a Validated reservation is cancelled, the **Validated -> Cancelled** transition and the release or deactivation of every exclusive shared technical-resource claim associated with that reservation must be atomic or equivalently serialized. Cancellation must not complete with an active claim left behind. Once the transition commits, the Cancelled reservation must not block a centralized control room or régie, technician, sound engineer, or any other exclusive shared resource defined by Issue #7. Detailed resource models and release mechanisms remain owned by Issue #7.
+For a Validated reservation, cancellation must not complete with an active claim left behind. Once the transition commits, the Cancelled reservation must not block a centralized control room or régie, technician, sound engineer, or any other exclusive shared resource defined by Issue #7. Detailed resource models and release mechanisms remain owned by Issue #7.
+
+Automatic expiry of PendingEntity or PendingStudio competes with cancellation under the same state-transition serialization. If expiry commits first, or if the start time has been reached when cancellation is resolved, cancellation must not succeed: a pending reservation must leave or remain in **Expired**, while a **Validated** reservation remains **Validated** and non-cancellable under these V1 rules. If cancellation commits first while the start time is still in the future, the reservation becomes **Cancelled** and any required Validated-resource claim release commits with it. Only one of cancellation, pending expiry, or the start-time cutoff outcome may win the race.
 
 After the start time, a pending reservation is Expired and a Validated reservation cannot be cancelled under this V1 specification. Administrative cancellation rules and any stricter cancellation cutoff can be added later if the product scope requires them.
 
@@ -193,6 +199,7 @@ The product must handle:
 - invalid or zero-length time ranges;
 - the start time passing between validation and submission, Level-1 approval or Level-2 approval;
 - cancellation immediately before the start time;
+- cancellation racing the start-time cutoff or automatic pending expiry;
 - a maintenance or administrative block added before final validation;
 - required technical or human resources becoming unavailable before final validation;
 - a refusal at either level without a reason, which must be rejected as invalid reviewer input;
