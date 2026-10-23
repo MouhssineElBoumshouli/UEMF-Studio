@@ -124,7 +124,7 @@ The Level-1 operation must be atomic or equivalently serialized and, at its comm
 
 Automatic expiry of a PendingEntity reservation competes with Level-1 approval under the same state-transition serialization. If expiry commits first, or if the start time has been reached when the Level-1 operation is resolved, Level 1 must not succeed or advance the reservation; the operation must leave or observe the resulting state **Expired**. If Level 1 commits first while the start time is still in the future, the reservation may enter **PendingStudio**, after which the normal start-time expiry rule still applies if Level 2 has not completed. Only one of these transitions may win the race.
 
-A Level-1 refusal changes PendingEntity to **Rejected**. The refusal requires a mandatory reason, and the requester must be notified immediately. Notification technology remains outside Issue #5 and is handled under Issue #7.
+A Level-1 refusal must be atomic or equivalently serialized with Level-1 approval, cancellation and automatic expiry. At its commit point, it must verify that the reservation is still **PendingEntity** and commit **PendingEntity -> Rejected**, including the mandatory reason and the resulting quota-accounting change. If cancellation, expiry or another valid state transition has already won, the refusal must not overwrite that state and must not send a rejection notification. A successfully committed refusal triggers immediate requester notification. Notification technology remains outside Issue #5 and is handled under Issue #7.
 
 ### Level 2 — final Studios technical validation
 
@@ -142,7 +142,7 @@ Requested mobile equipment references may be considered through the equipment/ma
 
 Whenever final validation requires an exclusive shared technical resource, its availability check and claim/reservation must occur atomically or be equivalently serialized with the Level-2 state transition. This includes a centralized control room or régie, a technician, a sound engineer, or another exclusive technical resource defined later by Issue #7. The invariant must be keyed by the resource and overlapping reservation interval, and must prevent the same resource from being claimed for overlapping reservations even when those reservations use different studios. A failed claim because the resource is already required by an overlapping reservation is a Level-2 availability refusal, not a technical commit failure.
 
-If every revalidated condition holds, the state changes from **PendingStudio** to **Validated**, and the user-visible status becomes **Validée**. If any availability or resource condition is disproven, Level 2 refuses the reservation, changes it to **Rejected**, records a mandatory reason, and triggers immediate notification to the requester. A technical failure that prevents the operation from completing is not a refusal and must not be converted into Rejected.
+If every revalidated condition holds, the state changes from **PendingStudio** to **Validated**, and the user-visible status becomes **Validée**. If any availability or resource condition is disproven, the Level-2 refusal operation must be atomic or equivalently serialized with Level-2 approval, cancellation and automatic expiry. At its commit point, it must verify that the reservation is still **PendingStudio** and commit **PendingStudio -> Rejected**, including the mandatory reason and the resulting quota-accounting change. If cancellation, expiry or another valid state transition has already won, the refusal must not overwrite that state and must not send a rejection notification. A successfully committed refusal triggers immediate notification to the requester. A technical failure that prevents the operation from completing is not a refusal and must not be converted into Rejected.
 
 Every user-visible state-changing reservation operation must use an operation identifier or an equivalent idempotency/reconciliation invariant. This includes submission, Level-1 approval, Level-1 refusal, Level-2 approval, Level-2 refusal and cancellation. If a response is lost after the server may have committed one of these operations, the client must reconcile the operation's outcome before retrying. It must not blindly retry, claim that the operation definitely failed, or present a technical failure as proof that the slot is unavailable. A retry or reconciliation of a committed refusal must not create a second state transition or duplicate the immediate requester notification; one committed refusal operation produces at most one such notification.
 
@@ -170,6 +170,8 @@ For V1, **PendingEntity**, **PendingStudio** and **Validated** reservations bloc
 
 Conflict checking and the state change that creates or validates a reservation must be atomic or serialized. A check performed before the state change is not sufficient, because two concurrent operations could otherwise both observe a free slot and both succeed.
 
+Creation or update of a maintenance or administrative block for a studio and affected time interval must participate in the same serialization or equivalent exclusion invariant as reservation submission and Level-2 final validation for that studio and interval. A maintenance/administrative block and a conflicting booking decision must not both successfully commit. This is a reservation-level consistency rule only; the detailed maintenance model and workflow remain outside Issue #5.
+
 The studio conflict invariant and the shared-resource invariant are separate and cumulative: a reservation must have both a free studio interval and successful claims for every required exclusive shared resource. The same resource must never be allocated to overlapping reservations, including reservations for different studios.
 
 Cancelled reservations have no active exclusive shared-resource claims. Releasing or deactivating those claims is part of the Validated -> Cancelled transition, so a Cancelled reservation cannot continue to block an overlapping reservation for another studio.
@@ -190,6 +192,7 @@ The product must handle:
 - two users submitting the same interval nearly simultaneously;
 - concurrent submissions by the same quota subject for different studios in the same campus-local week;
 - concurrent Level-2 validations for different studios requiring the same exclusive shared technical resource;
+- a maintenance or administrative block racing reservation submission or Level-2 validation for the same studio and interval;
 - a Level-1 approval reaching the start cutoff at the same time as automatic PendingEntity expiry;
 - a submission without the required activity type;
 - a submission without digital responsibility-charter acceptance/signature;
@@ -205,6 +208,7 @@ The product must handle:
 - a maintenance or administrative block added before final validation;
 - required technical or human resources becoming unavailable before final validation;
 - a refusal at either level without a reason, which must be rejected as invalid reviewer input;
+- a Level-1 or Level-2 refusal racing cancellation or automatic expiry without overwriting the winning terminal state or sending a duplicate rejection notification;
 - a lost response after the server may have committed creation, approval, refusal or cancellation;
 - cancellation of a Validated reservation releasing its exclusive shared-resource claims;
 - a reviewer attempting to validate a reservation whose interval is no longer bookable;
