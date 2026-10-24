@@ -30,7 +30,7 @@ It is a product specification only. It does not select Flutter architecture, bac
 
 The Issue #7 addendum is the source for the required project types, production pipeline, temporary QR behavior, end-of-session reporting, real-time occupancy visibility and reservation-notification integration.
 
-Labels follow the convention in the Issue #4 specification: `[REQ]` identifies an explicit source requirement, `[REC]` identifies a proposed product rule that is not explicit in the sources, and `[DECISION]` identifies an unresolved question. Recommendations are not binding until accepted by the team.
+Labels follow the convention in the Issue #4 specification: `[REQ]` identifies an explicit source requirement, `[REC]` identifies a proposed product rule that is not explicit in the sources, `[DECIDED]` identifies a team-accepted V1 rule, and `[DECISION]` identifies an unresolved follow-up question. Recommendations are not binding until accepted by the team.
 
 ### 2.2 Related work owned elsewhere
 
@@ -68,7 +68,7 @@ The Issue #7 addendum explicitly requires the capabilities marked `[REQ]`. Other
 - a full maintenance-management system; this Issue covers incident reporting and maintenance-related availability behavior only;
 - IoT occupancy sensing, which Issue #4 lists as outside V1.
 
-Items requiring an explicit team decision are marked `[DECISION]`. They are not silently treated as approved business rules.
+Items requiring an explicit team decision are marked `[DECISION]`. The eight Issue #7 V1 decisions recorded in the latest Issue #7 comments are marked `[DECIDED]`; they are approved functional rules, not implementation choices.
 
 ## 4. Actors and terms
 
@@ -101,7 +101,7 @@ The names below describe functional participation only. The final permission mat
 - an operational availability state;
 - an indication when the item is unavailable because of maintenance or an administrative block.
 
-`[DECISION]` The team must confirm the required identification fields, inventory/reference format, quantity model, accessories and whether an item represents a physical unit or a kit.
+`[DECIDED]` V1 equipment requests use catalog items or kits with an explicit quantity. The catalog/reference format and any accessories must identify what is being requested well enough for technical validation; the implementation may represent physical units and kits without changing the functional rule.
 
 ### 5.2 Equipment request in a reservation
 
@@ -111,7 +111,7 @@ The names below describe functional participation only. The final permission mat
 - `[REC]` Do not treat a requested item as confirmed merely because the reservation was submitted.
 - `[REQ]` Equipment/maintenance availability must be able to affect final Level-2 technical validation, consistent with Issue #5.
 
-`[DECISION]` The team must define whether users request quantities, named items, kits, categories or a combination, and how substitutions or partial fulfillment are handled.
+`[DECIDED]` A request records the requested catalog item or kit, quantity, and whether it is required or optional. Substitutions must be explicit and approved through the technical validation outcome; silent substitution is not allowed. An unavailable required request blocks final technical validation. An optional request may remain unfulfilled only through an explicit outcome; it must not be silently removed or replaced.
 
 ### 5.3 Availability behavior
 
@@ -125,13 +125,13 @@ The names below describe functional participation only. The final permission mat
 
 `[REC]` If the request cannot be satisfied, the reservation should not appear fully technically validated without an explicit outcome. The decision belongs to the `Responsable des Studios` Level-2 function, with any Administrator authority handled as specified by Issue #4. Follow Issue #5 reservation outcomes and Section 8 notification requirements.
 
-`[DECISION]` Confirm whether an unavailable optional item blocks the complete reservation, requires an explicit alternative, or can be removed while keeping the studio reservation request.
+`[DECIDED]` An unavailable optional item does not automatically invalidate the studio reservation, but the validation result must explicitly record that the item is unavailable or that an approved alternative was selected. The requester must not be given an apparently complete equipment request when the optional item was silently dropped.
 
 ### 5.4 Equipment handoff and return
 
 Issue #7 requires equipment availability to affect technical validation, but the authoritative sources do not yet define the physical handoff, return, inspection or responsibility procedure.
 
-`[DECISION]` Define whether V1 records checkout/return, who confirms handoff, how missing or damaged equipment is recorded, and whether a reservation can be completed while equipment return is unresolved.
+`[DECISION]` Follow-up details such as checkout/return records, handoff confirmation, and treatment of unresolved returns remain outside the eight accepted Issue #7 decisions.
 
 ## 6. Audiovisual projects and documents
 
@@ -154,7 +154,7 @@ Issue #7 requires equipment availability to affect technical validation, but the
 - `[REC]` Show an invited collaborator's project relationship and participation status.
 - `[REC]` Do not let project invitation silently grant unrelated reservation, administration or system permissions; apply the Issue #4 role model.
 
-`[DECISION]` Define collaborator permissions, invitation acceptance/decline behavior, removal rules and whether collaborators can upload, edit, request corrections or only view material.
+`[DECIDED]` Invitations target identified users and support accept/decline. The project owner controls collaborator removal/revocation. Access is granted explicitly per project or document and may be limited to the relevant view/contribute actions, including upload, edit or correction-request actions where granted. Collaboration does not grant ownership, reservation approval, archival/finalization authority or unrelated Issue #4 permissions.
 
 ### 6.3 Required production pipeline
 
@@ -165,7 +165,7 @@ Issue #7 requires equipment availability to affect technical validation, but the
 - `[REQ]` Pré-production includes mandatory preparatory material such as a script, conducteur d’émission or storyboard.
 - `[REQ]` Record the project brief and do not treat the project as ready for production until all required preparatory material is present. An exception is not part of the proposed V1 behavior.
 
-`[DECISION]` Confirm the mandatory document set by project type. Any exception policy remains unresolved and must not be allowed in the proposed V1 workflow without a separate team decision.
+`[DECISION]` Confirm the mandatory document set by project type. Any exception policy remains unresolved and must not be allowed in the V1 workflow without a separate team decision.
 
 #### B. Production
 
@@ -188,7 +188,7 @@ The reservation system remains the source of truth for slot approval and timing.
 
 The specification does not choose the cloud provider, file-storage architecture or retention technology.
 
-`[DECISION]` Confirm quality-control criteria, approval/rejection behavior, who may reopen an archived project, retention duration and whether the final link can expire.
+`[DECIDED]` Successful technical quality control moves the project to `Archived` and makes the final deliverable securely available. A failed quality-control result returns the project to correction. Archived material is not automatically deleted before UEMF defines an institutional retention policy; delivery-link expiration may be managed independently of project retention.
 
 ### 6.4 Documents
 
@@ -207,17 +207,19 @@ The specification does not choose the cloud provider, file-storage architecture 
 
 ### 7.2 Incident triage and resolution
 
-`[REC]` A proposed incident follow-up flow is:
+`[DECIDED]` V1 uses this incident flow:
 
-1. report submitted;
-2. technical/administrative review;
-3. impact assessed for equipment or studio availability;
-4. repair, replacement, follow-up or administrative action recorded;
-5. issue resolved or closed by an authorized actor.
+1. `Reported`;
+2. `Under Review`;
+3. `In Progress`;
+4. `Resolved`;
+5. `Closed`.
 
-This is a limited incident follow-up proposal, not a full maintenance-management system. Issue #4 excludes a full maintenance-management system from V1. The authoritative sources do not yet define final status names or service-level rules.
+`[DECIDED]` Incidents use `Low`, `Medium` or `High` severity. A high-severity issue affecting operational safety or usability makes the affected resource unavailable pending authorized review/resolution. The availability outcome must follow the Issue #5 rules.
 
-`[DECISION]` Confirm the status vocabulary, assignment rules, priority/severity rules, target dates, escalation behavior and whether an incident can be reopened.
+This is a limited incident follow-up rule, not a full maintenance-management system. Issue #4 excludes a full maintenance-management system from V1. Assignment, target dates, reopening and service-level rules remain follow-up details.
+
+`[DECISION]` Follow-up details such as assignment, target dates, reopening and service-level escalation remain outside the accepted V1 incident decision.
 
 ### 7.3 Availability impact
 
@@ -232,7 +234,7 @@ Issue #7 does not redefine the reservation conflict, cancellation or approval be
 
 `[REQ]` The Régisseur/technician function must have a dashboard showing physical studio occupancy in real time.
 
-`[DECISION]` Confirm the V1 method for keeping occupancy current, expected freshness, late/early access behavior and privacy limits. IoT occupancy sensing is explicitly outside V1 under Issue #4.
+`[DECIDED]` Authorized Technical Staff/Régisseur maintain `Free`, `Occupied` or `Unknown` and expose the last-updated time. Information older than the agreed operational freshness threshold is displayed as stale/`Unknown`; the threshold is configurable or subject to UEMF operational validation and is not hard-coded to 15 minutes. Access events may support the manual signal, but IoT sensing remains outside V1. Occupancy views must avoid unnecessary personal data.
 
 ## 8. Notifications
 
@@ -257,9 +259,9 @@ The event catalog must cover the following sourced reservation events and propos
 - `[REC]` correction/modification requests and their resolution;
 - `[REC]` quality-control or final-delivery outcome when a project participant must act.
 
-The `[REC]` event categories are proposals; confirm their recipients and whether each is required for V1.
+The cross-module event categories remain functional notifications only; delivery technology stays out of scope.
 
-`[DECISION]` Confirm recipients, urgency and read/unread behavior for proposed project/maintenance events, plus grouping/deduplication, retry behavior and whether users can mute any category. Refusal notifications must not be duplicated when an outcome is reconciled after an interruption.
+`[DECIDED]` Requesters receive reservation status, approval/rejection, cancellation/expiry and action-required notifications. Approvers receive requests in their scope; project participants receive relevant collaboration, correction, quality-control and delivery events; Technical/Admin users receive operational incident notifications. Notifications expose read/unread state, use stable operation/event identity for deduplication, retry delivery as appropriate, and must not duplicate a committed refusal after reconciliation. Mandatory reservation outcome notifications cannot be muted; optional project events may be configurable. Delivery technology remains out of scope.
 
 ### 8.3 Notification boundaries
 
@@ -280,7 +282,7 @@ The `[REC]` event categories are proposals; confirm their recipients and whether
 - `[REQ]` Before the slot starts or after it ends, the QR code must not grant access.
 - `[REC]` If the reservation is cancelled, rejected, expired or otherwise no longer valid, the QR code must not grant access.
 
-`[DECISION]` Confirm the exact start/end grace periods, campus timezone behavior, whether early setup time is supported and whether a reservation may have more than one active QR code.
+`[DECIDED]` The default QR validity interval is `[start, end)` in the campus timezone, with no early or late grace period. Any grace period or early-setup behavior requires explicit UEMF approval. Multiple valid scans during the active interval are allowed; a QR code is not freely shareable and access remains attributable to an authorized reservation participant.
 
 ### 9.3 Scan outcome
 
@@ -289,7 +291,7 @@ The `[REC]` event categories are proposals; confirm their recipients and whether
 - `[REC]` The user-facing result should clearly distinguish access granted from access refused without exposing implementation details.
 - `[REC]` QR access should not bypass the reservation approval workflow or create a reservation by itself.
 
-`[DECISION]` Confirm whether a scan records entry/exit, whether multiple scans are allowed, what happens when a person is not an invited participant, and how the technical team handles a false refusal.
+`[DECIDED]` Scans by authorized reservation participants may be accepted repeatedly during the active interval. A non-participant, invalid, expired or out-of-window scan is refused. Record only the minimum information necessary for access and audit purposes, such as the reservation, result and scan time, and avoid unnecessary personal data. A false refusal follows the authorized technical support path and must not bypass reservation validation.
 
 ### 9.4 Security and privacy boundary
 
@@ -307,7 +309,7 @@ Issue #4 assigns Administrators global planning, equipment-maintenance managemen
 
 This supporting scope does not constitute a full maintenance-management system, which Issue #4 lists outside V1.
 
-`[DECISION]` Confirm administrative search/filtering, exports, audit history, reporting, delegation, retention and bulk-update requirements.
+`[DECIDED]` V1 administration provides search/filter across reservations, projects, equipment and incidents, basic operational reports, and audit history for important privileged actions. Advanced analytics/BI, bulk mutations and broad exports are deferred unless separately required. Delegation and retention rules remain governed by the Issue #4 role model and institutional policy.
 
 Administrative capabilities must follow the role and permission definitions accepted under Issue #4. This document must not grant access by implication.
 
@@ -334,15 +336,17 @@ The following sourced requirements and proposed integration rules apply across w
 | QR behavior is defined at product level only | Section 9: issuance, validity window, scan outcomes and security boundary |
 | No Flutter implementation is added | This document contains functional requirements only; no code or technology choice |
 
-## 13. Decisions required before Phase 1 closure
+## 13. Decisions recorded for Issue #7
 
-The following `[DECISION]` items remain unresolved and keep Issue #7 open. The team should resolve them before treating this specification as accepted or closing Issue #7:
+The latest Issue #7 comments record team agreement on the eight remaining V1 decisions. The accepted rules are incorporated above and are marked `[DECIDED]`:
 
-- equipment quantity/kit/substitution behavior;
-- collaborator and document permissions;
-- incident status, severity and escalation model;
-- occupancy signal and freshness expectations;
-- notification recipients and event delivery semantics;
-- QR grace periods, multiple scans and participant validation;
-- project retention, archival and final-delivery rules;
-- administration search, audit and reporting needs.
+- equipment quantity/kit, required-versus-optional and explicit substitution behavior;
+- identified-user collaboration invitations, accept/decline, revocation and explicit project/document permissions;
+- incident status flow, severity and high-impact availability blocking;
+- occupancy states, last-updated information and configurable freshness;
+- notification recipients, read/unread state, deduplication, retries and mandatory reservation outcomes;
+- QR validity window, no default grace period, multiple scans, participant validation and minimum audit data;
+- project quality control, archival, secure final delivery and retention boundary;
+- administration search/filtering, basic reporting and privileged-action audit history.
+
+Additional implementation-level questions that are not needed to change these V1 rules remain marked `[DECISION]` as follow-up work. Issue #7 should remain open until this updated specification is reviewed and accepted through the PR workflow; no Flutter implementation is authorized by these decisions.
