@@ -39,6 +39,21 @@ Do not rely on old chat context when repository documentation exists.
 - A different team member reviews the PR before merge.
 - Prefer small PRs that are easy to understand and verify.
 
+## Human handoffs
+GitHub is the authoritative record, but a GitHub mention, assignment, or review request is **not** considered sufficient communication by itself while the team is still learning the GitHub workflow.
+
+Whenever work requires another teammate to act (for example: review a PR, update an Issue, incorporate a decision, resolve a conflict, or perform a merge gate):
+1. record the authoritative request on the relevant GitHub Issue or Pull Request;
+2. tell the current human exactly **which teammate must be contacted directly** through the team's communication channel (currently WhatsApp);
+3. provide a short message the human can send, pointing the teammate to the relevant Issue/PR and stating the required action;
+4. do not assume the teammate saw or understood a GitHub notification;
+5. once the human confirms the direct message was sent, verify the actual GitHub state before deciding the next step.
+
+The assistant must always distinguish between:
+- **recorded on GitHub**;
+- **directly communicated to the responsible teammate**;
+- **actually completed on GitHub**.
+
 ## Flutter rules
 When Flutter development starts:
 - Organize code by feature with shared core infrastructure.
