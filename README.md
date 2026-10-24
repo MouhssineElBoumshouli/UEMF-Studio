@@ -33,7 +33,7 @@ Read, in this order:
 
 ## Team coordination
 
-Current teammate actions are shown in the shared [UEMF Studio — Control Center](https://docs.google.com/spreadsheets/d/1m3_YMmqmdqU5cel-kCm3O23cX2nd8t5FbAR6IBpPBMU/edit). GitHub remains the technical source of truth; assistants keep the control sheet synchronized with it.
+Each teammate keeps separate ChatGPT projects and chats. Cross-teammate routing is maintained by the project assistants through GitHub Issue #14, **AI Coordination Registry**. Humans are not expected to manage that registry or relay routine AI instructions through WhatsApp or GitHub notification emails.
 
 ## Workflow
 
