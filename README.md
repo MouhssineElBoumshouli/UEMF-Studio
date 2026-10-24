@@ -31,10 +31,6 @@ Read, in this order:
 5. the assigned GitHub Issue;
 6. only the documentation relevant to that Issue.
 
-## Team coordination
-
-Each teammate keeps separate ChatGPT projects and chats. Cross-teammate routing is maintained by the project assistants through GitHub Issue #14, **AI Coordination Registry**. Humans are not expected to manage that registry or relay routine AI instructions through WhatsApp or GitHub notification emails.
-
 ## Workflow
 
 ```text
