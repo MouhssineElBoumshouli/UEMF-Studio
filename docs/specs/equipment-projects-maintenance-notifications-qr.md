@@ -121,6 +121,8 @@ The names below describe functional participation only. The final permission mat
 - maintenance or administrative unavailability;
 - the item’s current operational status.
 
+`[REQ]` When equipment availability is used as a Level-2 validation condition, the final validation operation must re-evaluate each relevant requested item for the full reservation interval and atomically or equivalently serialize that check with the equipment claim and the `PendingStudio -> Validated` transition. The invariant is keyed by the exclusive equipment unit or kit and overlapping reservation interval, and applies across reservations for different studios. Concurrent validations must have one winner for each conflicting item; a validation that cannot claim a required item follows the Issue #5 Level-2 availability outcome and must not be reported as a technical commit failure. This rule applies once an item is treated as a validation-blocking requirement; the open decision about optional-item fulfillment does not authorize two overlapping claims. Detailed inventory, quantity, allocation, substitution and claim-release mechanics remain open under this Issue and Issue #5.
+
 `[REC]` If the request cannot be satisfied, the reservation should not appear fully technically validated without an explicit outcome. The decision belongs to the `Responsable des Studios` Level-2 function, with any Administrator authority handled as specified by Issue #4. Follow Issue #5 reservation outcomes and Section 8 notification requirements.
 
 `[DECISION]` Confirm whether an unavailable optional item blocks the complete reservation, requires an explicit alternative, or can be removed while keeping the studio reservation request.
@@ -161,9 +163,9 @@ Issue #7 requires equipment availability to affect technical validation, but the
 #### A. Pré-production
 
 - `[REQ]` Pré-production includes mandatory preparatory material such as a script, conducteur d’émission or storyboard.
-- `[REC]` Record the project brief and do not treat the project as ready for production until the required material is present or an authorized actor has accepted an exception.
+- `[REQ]` Record the project brief and do not treat the project as ready for production until all required preparatory material is present. An exception is not part of the proposed V1 behavior.
 
-`[DECISION]` Confirm the mandatory document set by project type and who can accept an exception.
+`[DECISION]` Confirm the mandatory document set by project type. Any exception policy remains unresolved and must not be allowed in the proposed V1 workflow without a separate team decision.
 
 #### B. Production
 
@@ -334,7 +336,7 @@ The following sourced requirements and proposed integration rules apply across w
 
 ## 13. Decisions required before Phase 1 closure
 
-The team should resolve the `[DECISION]` items before treating this specification as accepted, especially:
+The following `[DECISION]` items remain unresolved and keep Issue #7 open. The team should resolve them before treating this specification as accepted or closing Issue #7:
 
 - equipment quantity/kit/substitution behavior;
 - collaborator and document permissions;
