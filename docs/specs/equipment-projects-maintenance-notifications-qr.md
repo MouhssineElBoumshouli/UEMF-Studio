@@ -146,7 +146,7 @@ Issue #7 requires equipment availability to affect technical validation, but the
 
 `[REC]` Select a project type when the project is created and show it in project information and filtering.
 
-`[DECIDED]` V1 assigns one primary type to each project. The supported values are the four types listed above; multi-type classification is deferred.
+`[REC]` V1 should assign one primary type to each project. The supported values are the four types listed above; multi-type classification is deferred.
 
 ### 6.2 Project ownership and collaboration
 
@@ -165,7 +165,7 @@ Issue #7 requires equipment availability to affect technical validation, but the
 - `[REQ]` Pré-production includes mandatory preparatory material such as a script, conducteur d’émission or storyboard.
 - `[REQ]` Record the project brief and do not treat the project as ready for production until all required preparatory material is present. An exception is not part of the proposed V1 behavior.
 
-`[DECIDED]` Before production, every project must have its project brief and at least one appropriate preparatory file selected from a script, conducteur d’émission or storyboard. The exact additional document matrix by project type is deferred, and no missing-file exception is allowed in V1.
+`[REC]` Before production, every project should have its project brief and at least one appropriate preparatory file selected from a script, conducteur d’émission or storyboard. The exact additional document matrix by project type is deferred, and no missing-file exception is proposed for V1.
 
 #### B. Production
 
@@ -179,7 +179,7 @@ The reservation system remains the source of truth for slot approval and timing.
 - `[REQ]` Post-production includes an editing status and correction/modification requests.
 - `[REC]` Each correction/modification request should identify the requested action and remain visible until it is resolved or otherwise closed under the final product decision.
 
-`[DECIDED]` V1 editing status uses `Not started`, `In progress`, `Correction requested` and `Ready for QC`. The technical team creates QC correction requests; the project owner or a collaborator with explicit edit permission resolves them by updating the material, and the technical team confirms the next QC outcome. Advanced revision history and file-size/type rules are deferred.
+`[REC]` V1 editing status should use `Not started`, `In progress`, `Correction requested` and `Ready for QC`. The technical team should create QC correction requests; the project owner or a collaborator with explicit edit permission should resolve them by updating the material, and the technical team should confirm the next QC outcome. Advanced revision history and file-size/type rules are deferred.
 
 #### D. Validation and archiving
 
@@ -203,7 +203,7 @@ The specification does not choose the cloud provider, file-storage architecture 
 - `[REQ]` After a session, the user can report defective equipment or furniture through an end-of-session form.
 - `[REC]` Where known, the report should identify the affected equipment, furniture or studio area, describe the problem, reference the relevant session/reservation and be visible to the Technical Team or responsible Administrator for follow-up.
 
-`[DECIDED]` The V1 end-of-session form requires the affected studio, equipment, furniture or area when known, a problem description and the related session/reservation when known. Severity and safety impact are assigned during incident triage rather than required from the reporter. Photos, offline submission and reporter confirmation are deferred.
+`[REC]` The V1 end-of-session form should include the affected studio, equipment, furniture or area when known, a problem description and the related session/reservation when known. Severity and safety impact should be assigned during incident triage rather than required from the reporter. Photos, offline submission and reporter confirmation are deferred.
 
 ### 7.2 Incident triage and resolution
 
