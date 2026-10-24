@@ -39,24 +39,27 @@ Do not rely on old chat context when repository documentation exists.
 - A different team member reviews the PR before merge.
 - Prefer small PRs that are easy to understand and verify.
 
-## AI coordination sync
-GitHub Issue #14 is the **AI coordination registry** for cross-teammate actions. It is primarily for the project assistants, not for humans to manage.
+## Shared coordination control
+The shared human/agent coordination surface is the Google Sheet **UEMF Studio — Control Center**:
+https://docs.google.com/spreadsheets/d/1m3_YMmqmdqU5cel-kCm3O23cX2nd8t5FbAR6IBpPBMU/edit
+
+GitHub remains the technical source of truth. The Control Center is only the simple live routing layer that says who should act now.
 
 At the start of every UEMF Studio project session, before telling the human what to do:
-1. inspect Issue #14;
-2. verify any relevant entry against its linked Issue/PR and current GitHub state;
-3. update Issue #14 if an action was completed, replaced, blocked, or reassigned;
-4. then give the human only the action that actually belongs to them now.
+1. read the Control Center;
+2. inspect only the GitHub Issue/PR needed to verify that person's current row;
+3. correct the row if GitHub shows it is stale;
+4. tell the human exactly one current action, or clearly say there is nothing to do.
 
 When work creates a dependency on another teammate:
-- record the dependency in Issue #14 and on the relevant Issue/PR;
-- do **not** ask the human to copy technical instructions into WhatsApp or another ChatGPT;
-- do **not** require a routine WhatsApp alert;
-- let the other teammate's project assistant discover the action during its next sync.
+- update that teammate's Control Center row directly;
+- give the row a new unique `Action ID`;
+- set Status to `DO` only when that teammate can actually act;
+- set Status to `WAIT` when they are blocked or have no action;
+- clear `Notified Action ID` whenever a genuinely new action is assigned;
+- do not ask humans to relay technical instructions through WhatsApp, GitHub notifications, or copied AI prompts.
 
-WhatsApp is reserved for genuinely urgent human coordination, not normal AI/project routing. If an urgent alert is necessary, keep it generic (for example: **"Please sync UEMF when you can."**) and keep the actual task details on GitHub.
-
-The human should never need to reconcile GitHub notifications, emails, WhatsApp history, and AI messages to determine the project state. The assistant must do that reconciliation from GitHub.
+Each teammate may run a personal automation that watches only their own row and notifies them once per new Action ID. Humans should not need to monitor GitHub emails or the Control Center manually.
 
 ## Flutter rules
 When Flutter development starts:
