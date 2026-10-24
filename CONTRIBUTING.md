@@ -72,12 +72,13 @@ Use the team's chosen merge method consistently once agreed.
 
 Delete obsolete feature branches after merge.
 
-## AI coordination
-Cross-team actions are tracked in GitHub Issue #14 as an AI-facing coordination registry.
+## Shared coordination control
+Cross-team routing is kept in the shared Google Sheet **UEMF Studio — Control Center**:
+https://docs.google.com/spreadsheets/d/1m3_YMmqmdqU5cel-kCm3O23cX2nd8t5FbAR6IBpPBMU/edit
 
-Project assistants must check and reconcile that registry with the linked Issues and Pull Requests before giving a teammate their next action. Routine task routing must not depend on WhatsApp messages or humans copying AI instructions between chats.
+GitHub remains authoritative for Issues, PRs, reviews, and decisions. The Control Center only provides a simple current-action view for the three teammates and their assistants.
 
-WhatsApp may be used for urgent human coordination, but the authoritative task and context remain on GitHub.
+Project assistants must keep the relevant row synchronized with GitHub and must not require humans to relay routine technical instructions through WhatsApp or GitHub notification emails.
 
 ## Conflict prevention
 Before starting an Issue, check the current assignments and active PRs.
