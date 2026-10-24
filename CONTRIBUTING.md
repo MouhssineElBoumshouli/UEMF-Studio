@@ -72,20 +72,12 @@ Use the team's chosen merge method consistently once agreed.
 
 Delete obsolete feature branches after merge.
 
-## Team Inbox
-Cross-team actions are tracked in GitHub Issue #14, **Team Inbox — current actions**.
+## AI coordination
+Cross-team actions are tracked in GitHub Issue #14 as an AI-facing coordination registry.
 
-Before starting work, check that Issue and verify any assigned action against its linked Issue or Pull Request. When a cross-team action changes state, update the Team Inbox. WhatsApp is used only to alert the responsible teammate to check the Team Inbox; detailed instructions should not be scattered through chat history.
+Project assistants must check and reconcile that registry with the linked Issues and Pull Requests before giving a teammate their next action. Routine task routing must not depend on WhatsApp messages or humans copying AI instructions between chats.
 
-## Team handoffs
-GitHub remains the source of truth, but GitHub notifications alone are not treated as a completed handoff.
-
-When another teammate must take action:
-1. record the request on the relevant Issue or Pull Request;
-2. contact that teammate directly through the team's current communication channel (WhatsApp);
-3. include the relevant Issue/PR number and the exact action needed;
-4. do not assume a mention, assignment, or review request was noticed;
-5. verify the GitHub result before continuing the workflow.
+WhatsApp may be used for urgent human coordination, but the authoritative task and context remain on GitHub.
 
 ## Conflict prevention
 Before starting an Issue, check the current assignments and active PRs.
