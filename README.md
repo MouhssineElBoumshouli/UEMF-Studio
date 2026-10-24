@@ -31,6 +31,10 @@ Read, in this order:
 5. the assigned GitHub Issue;
 6. only the documentation relevant to that Issue.
 
+## Team coordination
+
+Current cross-team actions are tracked in [Issue #14 — Team Inbox](../../issues/14). Check it before deciding what to work on next.
+
 ## Workflow
 
 ```text
