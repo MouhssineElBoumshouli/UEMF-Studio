@@ -2,6 +2,9 @@
 
 This repository is maintained by a three-person engineering team. The workflow is designed to reduce conflicts and make AI-assisted work reviewable.
 
+## Project language
+Use English for repository-facing documentation, Issues, Pull Requests, review comments, branch names, and commit messages. Preserve source-language quotations only when needed for accuracy.
+
 ## 1. Start from an Issue
 No feature, fix or structural change starts without a GitHub Issue.
 
