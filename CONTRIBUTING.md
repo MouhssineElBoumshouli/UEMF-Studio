@@ -72,13 +72,12 @@ Use the team's chosen merge method consistently once agreed.
 
 Delete obsolete feature branches after merge.
 
-## Shared coordination control
-Cross-team routing is kept in the shared Google Sheet **UEMF Studio — Control Center**:
-https://docs.google.com/spreadsheets/d/1m3_YMmqmdqU5cel-kCm3O23cX2nd8t5FbAR6IBpPBMU/edit
+## AI coordination
+Cross-team routing is maintained by the project assistants in GitHub Issue #14, **AI Coordination Registry**.
 
-GitHub remains authoritative for Issues, PRs, reviews, and decisions. The Control Center only provides a simple current-action view for the three teammates and their assistants.
+Each teammate may keep completely separate ChatGPT projects and chats. Project assistants must recover coordination state from GitHub rather than relying on chat history.
 
-Project assistants must keep the relevant row synchronized with GitHub and must not require humans to relay routine technical instructions through WhatsApp or GitHub notification emails.
+Humans should not need to relay routine technical instructions through WhatsApp, copied prompts, or GitHub notification emails. Each teammate's personal watcher may notify them when Issue #14 shows a verified new action for them.
 
 ## Conflict prevention
 Before starting an Issue, check the current assignments and active PRs.
