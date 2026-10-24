@@ -20,6 +20,10 @@ Before working on a task, read:
 
 Do not rely on old chat context when repository documentation exists.
 
+## Project language
+- Use English for repository-facing documentation, Issues, Pull Requests, review comments, branch names, commit messages, and durable project decisions unless quoting an external source that must remain in its original language.
+- Do not translate official source material itself when accuracy requires preserving the original wording.
+
 ## Scope discipline
 - Work on one GitHub Issue at a time.
 - Modify only files required by that Issue.
