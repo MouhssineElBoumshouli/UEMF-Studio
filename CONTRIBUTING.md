@@ -72,6 +72,11 @@ Use the team's chosen merge method consistently once agreed.
 
 Delete obsolete feature branches after merge.
 
+## Team Inbox
+Cross-team actions are tracked in GitHub Issue #14, **Team Inbox — current actions**.
+
+Before starting work, check that Issue and verify any assigned action against its linked Issue or Pull Request. When a cross-team action changes state, update the Team Inbox. WhatsApp is used only to alert the responsible teammate to check the Team Inbox; detailed instructions should not be scattered through chat history.
+
 ## Team handoffs
 GitHub remains the source of truth, but GitHub notifications alone are not treated as a completed handoff.
 
