@@ -72,13 +72,6 @@ Use the team's chosen merge method consistently once agreed.
 
 Delete obsolete feature branches after merge.
 
-## AI coordination
-Cross-team routing is maintained by the project assistants in GitHub Issue #14, **AI Coordination Registry**.
-
-Each teammate may keep completely separate ChatGPT projects and chats. Project assistants must recover coordination state from GitHub rather than relying on chat history.
-
-Humans should not need to relay routine technical instructions through WhatsApp, copied prompts, or GitHub notification emails. Each teammate's personal watcher may notify them when Issue #14 shows a verified new action for them.
-
 ## Conflict prevention
 Before starting an Issue, check the current assignments and active PRs.
 Avoid assigning two people to modify the same shared module simultaneously when tasks can be sequenced.
