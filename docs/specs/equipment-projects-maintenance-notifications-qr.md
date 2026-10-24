@@ -30,7 +30,7 @@ It is a product specification only. It does not select Flutter architecture, bac
 
 The Issue #7 addendum is the source for the required project types, production pipeline, temporary QR behavior, end-of-session reporting, real-time occupancy visibility and reservation-notification integration.
 
-Labels follow the convention in the Issue #4 specification: `[REQ]` identifies an explicit source requirement, `[REC]` identifies a proposed product rule that is not explicit in the sources, `[DECIDED]` identifies a team-accepted V1 rule, and `[DECISION]` identifies an unresolved follow-up question. Recommendations are not binding until accepted by the team.
+Labels follow the convention in the Issue #4 specification: `[REQ]` identifies an explicit source requirement, `[REC]` identifies a proposed product rule that is not explicit in the sources, `[DECIDED]` identifies a team-accepted V1 rule, and `[DEFERRED]` identifies behavior explicitly outside V1. Recommendations are not binding until accepted by the team.
 
 ### 2.2 Related work owned elsewhere
 
@@ -68,7 +68,7 @@ The Issue #7 addendum explicitly requires the capabilities marked `[REQ]`. Other
 - a full maintenance-management system; this Issue covers incident reporting and maintenance-related availability behavior only;
 - IoT occupancy sensing, which Issue #4 lists as outside V1.
 
-Items requiring an explicit team decision are marked `[DECISION]`. The eight Issue #7 V1 decisions recorded in the latest Issue #7 comments are marked `[DECIDED]`; they are approved functional rules, not implementation choices.
+The eight Issue #7 V1 decisions recorded in the latest Issue #7 comments are marked `[DECIDED]`. Product behavior that is not needed for the complete V1 workflow is marked `[DEFERRED]` rather than left as an implicit unresolved requirement.
 
 ## 4. Actors and terms
 
@@ -131,7 +131,7 @@ The names below describe functional participation only. The final permission mat
 
 Issue #7 requires equipment availability to affect technical validation, but the authoritative sources do not yet define the physical handoff, return, inspection or responsibility procedure.
 
-`[DECISION]` Follow-up details such as checkout/return records, handoff confirmation, and treatment of unresolved returns remain outside the eight accepted Issue #7 decisions.
+`[DEFERRED]` V1 does not track equipment checkout/return, handoff confirmation or return-based reservation completion. Missing or damaged equipment is reported through the end-of-session incident flow; a future handoff workflow may be specified separately.
 
 ## 6. Audiovisual projects and documents
 
@@ -146,7 +146,7 @@ Issue #7 requires equipment availability to affect technical validation, but the
 
 `[REC]` Select a project type when the project is created and show it in project information and filtering.
 
-`[DECISION]` Confirm whether a project may have more than one type or whether one primary type is mandatory.
+`[DECIDED]` V1 assigns one primary type to each project. The supported values are the four types listed above; multi-type classification is deferred.
 
 ### 6.2 Project ownership and collaboration
 
@@ -165,7 +165,7 @@ Issue #7 requires equipment availability to affect technical validation, but the
 - `[REQ]` Pré-production includes mandatory preparatory material such as a script, conducteur d’émission or storyboard.
 - `[REQ]` Record the project brief and do not treat the project as ready for production until all required preparatory material is present. An exception is not part of the proposed V1 behavior.
 
-`[DECISION]` Confirm the mandatory document set by project type. Any exception policy remains unresolved and must not be allowed in the V1 workflow without a separate team decision.
+`[DECIDED]` Before production, every project must have its project brief and at least one appropriate preparatory file selected from a script, conducteur d’émission or storyboard. The exact additional document matrix by project type is deferred, and no missing-file exception is allowed in V1.
 
 #### B. Production
 
@@ -179,7 +179,7 @@ The reservation system remains the source of truth for slot approval and timing.
 - `[REQ]` Post-production includes an editing status and correction/modification requests.
 - `[REC]` Each correction/modification request should identify the requested action and remain visible until it is resolved or otherwise closed under the final product decision.
 
-`[DECISION]` Confirm the editing-status values, who can create or resolve correction requests, whether revisions require version history, and the maximum file-size/type rules.
+`[DECIDED]` V1 editing status uses `Not started`, `In progress`, `Correction requested` and `Ready for QC`. The technical team creates QC correction requests; the project owner or a collaborator with explicit edit permission resolves them by updating the material, and the technical team confirms the next QC outcome. Advanced revision history and file-size/type rules are deferred.
 
 #### D. Validation and archiving
 
@@ -194,7 +194,7 @@ The specification does not choose the cloud provider, file-storage architecture 
 
 `[REC]` Attach documents to the project and associate them with the relevant production phase. The workflow should distinguish preparatory files, production-related material, post-production material, correction requests and final delivery material.
 
-`[DECISION]` Confirm document metadata, versioning, duplicate handling, deletion/replacement rules, preview requirements, virus/content checks and access audit requirements.
+`[DEFERRED]` V1 requires a document to remain associated with its project phase and to expose enough identity for the authorized workflow. Advanced metadata, version history, duplicate handling, previews, deletion/replacement policy, content scanning and document-level access audits are deferred.
 
 ## 7. Maintenance and incident management
 
@@ -203,7 +203,7 @@ The specification does not choose the cloud provider, file-storage architecture 
 - `[REQ]` After a session, the user can report defective equipment or furniture through an end-of-session form.
 - `[REC]` Where known, the report should identify the affected equipment, furniture or studio area, describe the problem, reference the relevant session/reservation and be visible to the Technical Team or responsible Administrator for follow-up.
 
-`[DECISION]` Confirm whether photos, severity, safety impact, location, reporter confirmation and offline submission are required in V1.
+`[DECIDED]` The V1 end-of-session form requires the affected studio, equipment, furniture or area when known, a problem description and the related session/reservation when known. Severity and safety impact are assigned during incident triage rather than required from the reporter. Photos, offline submission and reporter confirmation are deferred.
 
 ### 7.2 Incident triage and resolution
 
@@ -219,7 +219,7 @@ The specification does not choose the cloud provider, file-storage architecture 
 
 This is a limited incident follow-up rule, not a full maintenance-management system. Issue #4 excludes a full maintenance-management system from V1. Assignment, target dates, reopening and service-level rules remain follow-up details.
 
-`[DECISION]` Follow-up details such as assignment, target dates, reopening and service-level escalation remain outside the accepted V1 incident decision.
+`[DEFERRED]` V1 does not require target dates, service-level timers or a separate escalation workflow. A high-severity safety/usability issue follows the availability-blocking rule above. Reopening a closed incident is deferred; a new report may be created if the problem recurs.
 
 ### 7.3 Availability impact
 
@@ -349,4 +349,4 @@ The latest Issue #7 comments record team agreement on the eight remaining V1 dec
 - project quality control, archival, secure final delivery and retention boundary;
 - administration search/filtering, basic reporting and privileged-action audit history.
 
-Additional implementation-level questions that are not needed to change these V1 rules remain marked `[DECISION]` as follow-up work. Issue #7 should remain open until this updated specification is reviewed and accepted through the PR workflow; no Flutter implementation is authorized by these decisions.
+The deferred behaviors above are explicit V1 boundaries, not hidden product decisions. Issue #7 should remain open until this updated specification is reviewed and accepted through the PR workflow; no Flutter implementation is authorized by these decisions.
