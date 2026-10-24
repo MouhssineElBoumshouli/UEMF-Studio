@@ -39,31 +39,24 @@ Do not rely on old chat context when repository documentation exists.
 - A different team member reviews the PR before merge.
 - Prefer small PRs that are easy to understand and verify.
 
-## Team Inbox
-The live cross-team action queue is GitHub Issue #14: **Team Inbox — current actions**.
+## AI coordination sync
+GitHub Issue #14 is the **AI coordination registry** for cross-teammate actions. It is primarily for the project assistants, not for humans to manage.
 
-At the start of every project session, before deciding what the human should do next:
+At the start of every UEMF Studio project session, before telling the human what to do:
 1. inspect Issue #14;
-2. verify each relevant action against the linked Issue/PR because the queue may have changed since the last session;
+2. verify any relevant entry against its linked Issue/PR and current GitHub state;
 3. update Issue #14 if an action was completed, replaced, blocked, or reassigned;
-4. do not create a new cross-team instruction elsewhere without reflecting it in Issue #14.
+4. then give the human only the action that actually belongs to them now.
 
-WhatsApp is only an alert channel. Detailed instructions belong on GitHub. A normal alert should be short, for example: **"You have an action in Team Inbox #14."**
+When work creates a dependency on another teammate:
+- record the dependency in Issue #14 and on the relevant Issue/PR;
+- do **not** ask the human to copy technical instructions into WhatsApp or another ChatGPT;
+- do **not** require a routine WhatsApp alert;
+- let the other teammate's project assistant discover the action during its next sync.
 
-## Human handoffs
-GitHub is the authoritative record, but a GitHub mention, assignment, or review request is **not** considered sufficient communication by itself while the team is still learning the GitHub workflow.
+WhatsApp is reserved for genuinely urgent human coordination, not normal AI/project routing. If an urgent alert is necessary, keep it generic (for example: **"Please sync UEMF when you can."**) and keep the actual task details on GitHub.
 
-Whenever work requires another teammate to act (for example: review a PR, update an Issue, incorporate a decision, resolve a conflict, or perform a merge gate):
-1. record the authoritative request on the relevant GitHub Issue or Pull Request;
-2. tell the current human exactly **which teammate must be contacted directly** through the team's communication channel (currently WhatsApp);
-3. provide a short message the human can send, pointing the teammate to the relevant Issue/PR and stating the required action;
-4. do not assume the teammate saw or understood a GitHub notification;
-5. once the human confirms the direct message was sent, verify the actual GitHub state before deciding the next step.
-
-The assistant must always distinguish between:
-- **recorded on GitHub**;
-- **directly communicated to the responsible teammate**;
-- **actually completed on GitHub**.
+The human should never need to reconcile GitHub notifications, emails, WhatsApp history, and AI messages to determine the project state. The assistant must do that reconciliation from GitHub.
 
 ## Flutter rules
 When Flutter development starts:
