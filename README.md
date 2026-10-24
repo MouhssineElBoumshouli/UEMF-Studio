@@ -33,7 +33,7 @@ Read, in this order:
 
 ## Team coordination
 
-Current cross-team actions are tracked in [Issue #14 — Team Inbox](../../issues/14). Check it before deciding what to work on next.
+Current teammate actions are shown in the shared [UEMF Studio — Control Center](https://docs.google.com/spreadsheets/d/1m3_YMmqmdqU5cel-kCm3O23cX2nd8t5FbAR6IBpPBMU/edit). GitHub remains the technical source of truth; assistants keep the control sheet synchronized with it.
 
 ## Workflow
 
