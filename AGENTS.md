@@ -39,6 +39,17 @@ Do not rely on old chat context when repository documentation exists.
 - A different team member reviews the PR before merge.
 - Prefer small PRs that are easy to understand and verify.
 
+## Team Inbox
+The live cross-team action queue is GitHub Issue #14: **Team Inbox — current actions**.
+
+At the start of every project session, before deciding what the human should do next:
+1. inspect Issue #14;
+2. verify each relevant action against the linked Issue/PR because the queue may have changed since the last session;
+3. update Issue #14 if an action was completed, replaced, blocked, or reassigned;
+4. do not create a new cross-team instruction elsewhere without reflecting it in Issue #14.
+
+WhatsApp is only an alert channel. Detailed instructions belong on GitHub. A normal alert should be short, for example: **"You have an action in Team Inbox #14."**
+
 ## Human handoffs
 GitHub is the authoritative record, but a GitHub mention, assignment, or review request is **not** considered sufficient communication by itself while the team is still learning the GitHub workflow.
 
