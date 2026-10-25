@@ -1,68 +1,71 @@
 # UEMF Studio
 
-Application professionnelle de gestion des Euromed Studios, réalisée par une équipe de trois élèves ingénieurs.
+A professional mobile application for managing Euromed Studios, developed by a three-person engineering team.
 
-## Objectif
+## Goal
 
-Construire une application rapide, intuitive, maintenable et prête à évoluer vers un usage réel en entreprise.
+Build an application that is fast, intuitive, maintainable, visually polished, and suitable for real institutional use.
 
-Les priorités du projet sont :
+The project priorities are:
 
-1. code simple, flexible et maintenable ;
-2. collaboration fluide avec un minimum de conflits Git ;
-3. expérience UX/UI premium, cohérente et accessible ;
-4. performance, fiabilité et sécurité ;
-5. usage rigoureux des assistants IA sans laisser les chats devenir la source de vérité.
+1. simple, readable, maintainable code;
+2. smooth collaboration with minimal Git conflicts;
+3. premium, coherent, accessible UX/UI;
+4. speed, reliability, and security;
+5. disciplined use of AI assistants without allowing chats to become the source of truth.
 
-## Source de vérité
+## Source of truth
 
-Ce dépôt GitHub est la source officielle du projet.
+This GitHub repository is the official source of truth for the project.
 
-Les conversations ChatGPT, Codex, Claude et Claude Code servent à analyser, concevoir, implémenter et relire. Toute décision durable doit finir dans le dépôt.
+ChatGPT and local Codex are used for planning, implementation, and review. Durable decisions must be recorded in GitHub.
 
-## Avant de contribuer
+## Before contributing
 
-Lire dans cet ordre :
+Read, in this order:
 
 1. [AGENTS.md](AGENTS.md)
 2. [CONTRIBUTING.md](CONTRIBUTING.md)
 3. [PLANS.md](PLANS.md)
 4. [docs/status/CURRENT.md](docs/status/CURRENT.md)
-5. la GitHub Issue assignée ;
-6. uniquement la documentation pertinente pour cette Issue.
-
-Claude Code lit également [CLAUDE.md](CLAUDE.md).
+5. the assigned GitHub Issue;
+6. only the documentation relevant to that Issue.
 
 ## Workflow
 
 ```text
 GitHub Issue
     ↓
-1 responsable principal
+1 primary owner
     ↓
-branche dédiée
+dedicated branch
     ↓
-implémentation
+implementation or documentation work
     ↓
-tests / vérifications
+checks / verification
     ↓
 Pull Request
     ↓
-review par un autre membre
+review by another team member
     ↓
-merge vers main
+merge into main
 ```
 
-Aucune feature ne doit être développée directement sur `main`.
+No feature work is developed directly on `main`.
 
-## Décisions
+## Decisions
 
-Les décisions durables sont stockées sous forme d'ADR dans [docs/decisions](docs/decisions).
+Durable technical and process decisions are recorded as ADRs in [docs/decisions](docs/decisions).
 
-## État actuel
+## Current status
 
-Le projet est actuellement en **Phase 0 — fondation du dépôt et de l'équipe**.
+The project is currently completing **Phase 1 — Functional specification**.
 
-Aucun code Flutter n'est encore considéré comme démarré officiellement. La prochaine grande étape après la validation de la fondation est la **spécification fonctionnelle complète**.
+- Product scope, actors, and roles are complete.
+- Studios, availability, and reservation rules are complete.
+- Equipment, projects, maintenance/incidents, notifications, and QR behavior are being finalized.
+- Flutter implementation has **not** started.
 
-Voir [docs/status/CURRENT.md](docs/status/CURRENT.md).
+After Phase 1 is complete, the team will move to UX/product flows and then the full Figma design before application implementation begins.
+
+See [docs/status/CURRENT.md](docs/status/CURRENT.md) and the active GitHub Issues for the latest status.
