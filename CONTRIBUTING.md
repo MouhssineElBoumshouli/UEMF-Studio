@@ -49,7 +49,7 @@ A PR must:
 - explain what changed;
 - explain how it was verified;
 - identify risks or follow-up work;
-- remain reasonably small.
+- remain small enough that another developer can genuinely understand and explain the change. Prefer several focused PRs over one very large AI-generated PR when that improves human reviewability.
 
 ## 6. Review
 At least one other team member reviews the PR before merge.
@@ -67,12 +67,16 @@ Review for:
 
 AI review can assist, but a human remains responsible for approval.
 
+Before approving an important PR, the reviewer should be able to answer: **“What would break if this PR were wrong?”** Identify the affected behavior, users, modules, data or workflow. Tests and AI review support this judgment; they do not replace it.
+
 ## 7. Merge
 Use the team's chosen merge method consistently once agreed.
 
 Delete obsolete feature branches after merge.
 
 ## Conflict prevention
+Before Flutter implementation begins, the team must agree on the main module boundaries, primary ownership and interfaces between shared areas such as reservations, projects, equipment, notifications, QR access, incidents/maintenance and the shared design system.
+
 Before starting an Issue, check the current assignments and active PRs.
 Avoid assigning two people to modify the same shared module simultaneously when tasks can be sequenced.
 
