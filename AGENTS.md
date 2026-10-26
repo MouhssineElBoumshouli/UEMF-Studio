@@ -37,9 +37,13 @@ Do not rely on old chat context when repository documentation exists.
 - Branch examples: `feat/27-reservation-summary`, `fix/42-slot-collision`, `chore/1-repository-foundation`.
 - Changes enter `main` through Pull Requests.
 - A different team member reviews the PR before merge.
-- Prefer small PRs that are easy to understand and verify.
+- Keep PRs small enough that another developer can genuinely understand, explain and verify them. Prefer several focused PRs over one very large AI-generated change when that improves human reviewability.
 
 ## Flutter rules
+Before Flutter implementation starts:
+- the team must agree on the main module boundaries, primary ownership and interfaces between modules such as reservations, projects, equipment, notifications, QR access, incidents/maintenance and the shared design system;
+- cross-module contracts should be explicit enough to reduce overlapping edits, merge conflicts and unclear ownership.
+
 When Flutter development starts:
 - Organize code by feature with shared core infrastructure.
 - Keep widgets small and focused.
@@ -70,6 +74,11 @@ For Flutter, the baseline checks will include:
 - `dart format`;
 - `flutter analyze`;
 - relevant automated tests.
+
+## Review understanding gate
+Before recommending approval of an important PR, the reviewer should be able to answer: **“What would break if this PR were wrong?”**
+
+The review should identify the affected behavior, users, modules, data or workflow. Passing tests or a clean AI review does not replace understanding the practical failure impact. If the reviewer cannot explain that impact, the PR is not yet understood well enough for approval.
 
 ## AI usage
 AI-generated code is treated exactly like human-written code: it requires review and tests.
