@@ -59,13 +59,13 @@ Durable technical and process decisions are recorded as ADRs in [docs/decisions]
 
 ## Current status
 
-The project is currently completing **Phase 1 — Functional specification**.
+Phase 1 — Functional specification is complete. The project is now entering **Phase 2 — UX and product flows**, with Issue #9 as the current UX/UI exploration work.
 
 - Product scope, actors, and roles are complete.
 - Studios, availability, and reservation rules are complete.
-- Equipment, projects, maintenance/incidents, notifications, and QR behavior are being finalized.
+- Equipment, projects, maintenance/incidents, notifications, and QR behavior are complete for the accepted Phase 1 baseline.
 - Flutter implementation has **not** started.
 
-After Phase 1 is complete, the team will move to UX/product flows and then the full Figma design before application implementation begins.
+The team is targeting a coherent, good working MVP first using the approved Phase 1 baseline. Non-essential unanswered UEMF policy details may remain open, configurable or deferred without blocking the MVP, but the project must not invent UEMF policy or contradict the Cahier des Charges.
 
-See [docs/status/CURRENT.md](docs/status/CURRENT.md) and the active GitHub Issues for the latest status.
+See [docs/status/CURRENT.md](docs/status/CURRENT.md) and the active GitHub Issues for the latest status and details.
