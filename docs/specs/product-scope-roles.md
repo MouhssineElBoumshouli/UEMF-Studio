@@ -35,18 +35,18 @@ The source names these studio areas:
 
 ## 3. Role-model principles
 
-The following is a **[REC] product model**, not a technical architecture decision:
+The following describes the V1 role model; it is not a technical architecture decision:
 
 - **Organizational profile** describes a person's institutional relationship, such as Student, Professor / Enseignant-Chercheur, Communication Team member or External Client.
 - **Privileged authorization role** describes a scoped decision or operational function, such as Entity Approver, Studio Approver or Administrator.
 - **Contextual role** describes what someone is doing in a specific group, project or activity, such as an authorized Club Representative or a project collaborator.
 - **Organization/group** is the entity an action may represent, such as an establishment or Student Club.
 
-**[REC]** One individually identified user may hold multiple compatible roles. Privileged roles should be limited to their defined scope and should not imply unlimited authority. Visibility should follow least privilege.
+**[DECIDED]** In V1, one individually identified user may hold multiple compatible roles. Privileged roles remain limited to their defined scope and do not imply unlimited authority. Normal permission and scope checks still apply, and visibility should follow least privilege.
 
-**[REC] [DECISION]** Self-approval should be prohibited as a safeguard. The Cahier des Charges does not state this rule, so the team/UEMF must validate it before treating it as binding.
+**[DECIDED]** Self-approval is prohibited: a user cannot approve their own reservation or request when they also hold an approval role.
 
-**[REC]** A Student Club should be represented as an organization/group, not a shared credential. Individually identified, authorized Club Representatives would act on its behalf, with actions attributable to the person and the club. Representative assignment and revocation remain unresolved below.
+**[DECIDED]** A Student Club is represented as an organization/group, not through shared credentials. An individually identified, authorized Club Representative acts on its behalf, with actions attributable to both the person and the club. Representative assignment and revocation remain unresolved below.
 
 ## 4. Required actors and functional roles
 
@@ -70,7 +70,7 @@ The following is a **[REC] product model**, not a technical architecture decisio
 
 **[REQ]** Clubs have a shared group profile for validated cultural activities, with responsibility linked to the **Direction des Affaires Estudiantines**. The Level-1 mapping for Students & Clubs is establishment / **Responsable de la Vie Étudiante**.
 
-**[REC]** An individually identified Club Representative acts for the club; the club remains the represented organization.
+**[DECIDED]** An individually identified Club Representative acts for the club; the club remains the represented organization. Shared credentials are not used.
 
 **[DECISION]** Confirm who designates and revokes representatives, the exact Student Life versus establishment approval routing, and what qualifies as an eligible cultural activity.
 
@@ -109,7 +109,7 @@ Required Level-1 mapping **[REQ]**:
 
 **[REQ]** Final Level-2 technical validation belongs to the **Responsable des Studios** function.
 
-**[REC]** Model Studio Approver separately from Administrator so the final technical function and operational administration remain distinguishable. The Cahier also gives Administrators final-slot-validation capability; this specification does not assume the two functions are held by the same organizational position.
+**[DECIDED]** In V1, the Studio Approver / Responsable des Studios and Administrator are distinct roles/functions so final technical validation and operational administration remain distinguishable. Normal compatible-role and scope checks still apply; this specification does not infer a broader organizational assignment.
 
 ### Administrator
 
@@ -154,12 +154,12 @@ Where eligibility, visibility or operational rights are not established, they re
 - **[REQ]** The Technical Team has equipment-maintenance and planning follow-up responsibilities.
 - **[REQ]** Administrators have global operational supervision, equipment-maintenance management and final-slot-validation capabilities.
 
-### Product recommendations
+### Cross-cutting product rules and recommendations
 
-- **[REC]** A user may hold multiple compatible roles; each action is still evaluated against its applicable scope.
-- **[REC] [DECISION]** Prohibit self-approval if validated by the team/UEMF.
+- **[DECIDED]** A user may hold multiple compatible roles; each action is still evaluated against its applicable permission and scope.
+- **[DECIDED]** Self-approval is prohibited.
 - **[REC]** Keep authority scoped to the relevant establishment, requester category, project or operational function.
-- **[REC]** A club remains the owner of its group activity while each representative's action is attributable to that individual.
+- **[DECIDED]** A club remains the owner of its group activity while each individually identified representative's action is attributable to that individual; shared credentials are not used.
 - **[REC]** Global Administrator visibility does not imply unrestricted authority to perform every business action.
 - **[REC]** Project ownership/collaboration and reservation requester identity are distinct concepts; project collaborator status alone should not imply reservation approval authority.
 
@@ -182,11 +182,11 @@ This Issue does not define or commit V1 to:
 
 ## 8. Decision register
 
-| Open decision | Current treatment / coordination |
+| Decision or open question | Current treatment / coordination |
 | --- | --- |
-| Administrator vs Studio Approver organizational assignment | **[DECISION]** Both capabilities are sourced; confirm whether they belong to one position or separate positions. |
-| Multiple roles per user | **[DECISION]** Recommended in the role model; confirm compatible combinations and handling. |
-| Self-approval | **[DECISION]** Recommended prohibition; confirm policy. |
+| Administrator vs Studio Approver organizational assignment | **[DECIDED]** V1 defines them as distinct roles/functions. Normal compatible-role and scope checks still apply; no broader organizational assignment is inferred here. |
+| Multiple roles per user | **[DECIDED]** V1 permits one user to hold multiple compatible roles, with normal permission and scope checks; exact combinations can be defined as needed. |
+| Self-approval | **[DECIDED]** V1 prohibits self-approval. |
 | Assignment and revocation of privileged roles | **[DECISION]** Authority and process are unspecified. |
 | Student vs Club Level-1 routing | **[DECISION]** Preserve the sourced establishment / Responsable de la Vie Étudiante mapping; confirm exact routing and any delegation distinction. |
 | Club Representative designation/revocation | **[DECISION]** Identify the responsible authority and validation process. |

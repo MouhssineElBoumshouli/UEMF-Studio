@@ -81,7 +81,7 @@ The names below describe functional participation only. The final permission mat
 | Requester | Person who submits or owns a reservation request. |
 | Approver | Actor participating in the reservation approval workflow defined by Issue #5. |
 | Technical team | Technical Staff responsible for equipment status, maintenance and operational follow-up; this term does not itself grant Level-2 approval authority. |
-| Responsable des Studios / Studio Approver | Function responsible for final Level-2 technical validation under Issue #4. The relationship to the Administrator's separately sourced final-slot-validation capability remains an Issue #4 decision. |
+| Responsable des Studios / Studio Approver | Function responsible for final Level-2 technical validation under Issue #4. It is a distinct V1 role/function from Administrator; normal compatible-role and scope checks still apply. |
 | Administrator | Operational role with capabilities defined by Issue #4, including global planning, equipment-maintenance management, project supervision and final-slot-validation capability. |
 | Reservation slot | The approved studio date/time interval to which equipment and project production activity may be linked. |
 | Incident | A reported defect, damage, abnormal event or operational problem affecting equipment, furniture or a studio. |
@@ -146,7 +146,7 @@ Issue #7 requires equipment availability to affect technical validation, but the
 
 `[REC]` Select a project type when the project is created and show it in project information and filtering.
 
-`[REC]` V1 should assign one primary type to each project. The supported values are the four types listed above; multi-type classification is deferred.
+`[DECIDED]` Each V1 project has exactly one primary type from the four supported values listed above: Enseignement / MOOC, Recherche, Culture or Communication institutionnelle. Multi-type classification is outside V1.
 
 ### 6.2 Project ownership and collaboration
 
@@ -179,7 +179,9 @@ The reservation system remains the source of truth for slot approval and timing.
 - `[REQ]` Post-production includes an editing status and correction/modification requests.
 - `[REC]` Each correction/modification request should identify the requested action and remain visible until it is resolved or otherwise closed under the final product decision.
 
-`[REC]` V1 editing status should use `Not started`, `In progress`, `Correction requested` and `Ready for QC`. The technical team should create QC correction requests; the project owner or a collaborator with explicit edit permission should resolve them by updating the material, and the technical team should confirm the next QC outcome. Advanced revision history and file-size/type rules are deferred.
+`[DECIDED]` V1 post-production status is one of `Not started`, `In progress`, `Correction requested` or `Ready for QC`.
+
+`[REC]` The technical team should create QC correction requests; the project owner or a collaborator with explicit edit permission should resolve them by updating the material, and the technical team should confirm the next QC outcome. Advanced revision history and file-size/type rules are deferred.
 
 #### D. Validation and archiving
 
