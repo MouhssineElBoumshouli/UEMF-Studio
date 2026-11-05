@@ -80,5 +80,12 @@ This is the high-level roadmap. Detailed work is tracked through GitHub Issues.
 - release process;
 - deployment.
 
+## Delivery and quality gates
+- There is no hard delivery deadline. Incremental delivery is encouraged, but every increment must fit a coherent production architecture and must not rely on avoidable throwaway work or lowered quality standards.
+- Before implementation begins, the team must review and approve the Phase 2 UX/product flows and the Phase 3 design system to a production-handoff standard, including accessibility and responsive/adaptive behavior.
+- Before implementation begins, the team must document and accept the Phase 4 technical architecture, including module boundaries and interfaces, authentication/authorization, backend/API/database design, data protection, observability and recovery considerations.
+- Implementation and later increments must preserve production-quality expectations for validation and concurrency correctness, auditability where required, automated testing, CI/CD, environment management, performance, reliability, maintainability and operational readiness.
+- The accepted Phase 1 specifications remain the functional baseline unless explicitly reopened. Open UEMF policy questions must remain open or configurable rather than being invented.
+
 ## Current rule
-Do not start Flutter implementation until the functional scope and key architecture decisions are documented and accepted.
+Do not start Flutter implementation until the Phase 2 UX/product flows, Phase 3 design system and Phase 4 architecture gates are documented, reviewed and accepted.
