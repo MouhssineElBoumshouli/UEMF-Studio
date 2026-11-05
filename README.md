@@ -59,13 +59,15 @@ Durable technical and process decisions are recorded as ADRs in [docs/decisions]
 
 ## Current status
 
-Phase 1 — Functional specification is complete. The project is now entering **Phase 2 — UX and product flows**, with Issue #9 as the current UX/UI exploration work.
+Phase 1 — Functional specification is complete. The project is now in **Phase 2 — UX and product flows**, with Issue #9 as the current UX/UI exploration work.
 
 - Product scope, actors, and roles are complete.
 - Studios, availability, and reservation rules are complete.
 - Equipment, projects, maintenance/incidents, notifications, and QR behavior are complete for the accepted Phase 1 baseline.
 - Flutter implementation has **not** started.
 
-The team is targeting a coherent, good working MVP first using the approved Phase 1 baseline. Non-essential unanswered UEMF policy details may remain open, configurable or deferred without blocking the MVP, but the project must not invent UEMF policy or contradict the Cahier des Charges.
+There is no hard delivery deadline. UEMF Studio is being developed as a complete, production-oriented, enterprise-grade application with a professional product/design/engineering quality bar. Incremental delivery remains encouraged, but each increment must fit a coherent production architecture and avoid throwaway work or avoidable quality shortcuts.
+
+The accepted Phase 1 specification remains the functional baseline unless explicitly reopened. Open UEMF policy details may remain configurable, visibly open or deferred, but the project must not invent UEMF policy or contradict the Cahier des Charges. Flutter implementation has not started and remains gated by the required UX/design and technical-architecture reviews.
 
 See [docs/status/CURRENT.md](docs/status/CURRENT.md) and the active GitHub Issues for the latest status and details.
